@@ -40,7 +40,8 @@
               </section>
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码" v-model="code">
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                <img ref="captcha" class="get_verification" src="http://localhost:5000/captcha"
+                     alt="captcha" @click="updateCaptcha">
               </section>
             </section>
           </div>
@@ -77,7 +78,7 @@
     methods:{
         //发送短信验证码
       sendCode(){
-        this.countDown = 30  //倒计时总时长
+        this.countDown = 60  //倒计时总时长
         const intervalId = setInterval(() => {
           this.countDown--
           if(this.countDown === 0){
@@ -109,6 +110,10 @@
           }
         }
         console.log('发送请求成功')
+      },
+      //更新图片验证码
+      updateCaptcha(){
+        this.$refs.captcha.src = 'http://localhost:5000/captcha?time=' + Date.now()
       }
     }
   }
@@ -176,7 +181,7 @@
                 font-size 14px
                 background transparent
                 &.right
-                  color black
+                  color red
             .login_verification
               position relative
               margin-top 16px
