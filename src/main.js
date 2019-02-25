@@ -7,14 +7,18 @@ import App from './App.vue'
 
 import router from './router'
 import Header from './components/Header/Header.vue'
+import store from './store'
+import Star from './components/star/star.vue'
 
 //注册全局组件
 Vue.component('Header',Header)
+Vue.component('Star',Star)
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  // components: { App },
-  // template: '<App/>'
   render:h => h(App),
-  router
+  router,  //用于配置路由器
+  store    //配置vuex的核心管理对象
 })
