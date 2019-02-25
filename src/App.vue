@@ -10,6 +10,7 @@
       mounted(){
           //触发vuex的getAddress（），然后从后台获取address
         this.$store.dispatch('getAddress')
+        this.$store.dispatch('reqUserInfo')
       },
       components:{
         FooterGuide

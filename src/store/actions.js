@@ -5,13 +5,17 @@
 import {
   reqAddress,
   reqCategorys,
-  reqShops
+  reqShops,
+  reqUserInfo,
+  reqLogOut
 } from '../api'
 
 import {
   RECEIVE_ADDRESS,
   RECEIVE_CATEGORYS,
-  RECEIVE_SHOPS
+  RECEIVE_SHOPS,
+  RECEIVE_USER,
+  RESET_USER
 } from './mutation-types'
 
 export default {
@@ -44,5 +48,24 @@ export default {
       commit(RECEIVE_SHOPS,result.data)
     }
   },
+  //同步保存用户的action
+  saveUser({commit},user){
+    commit(RECEIVE_USER,user)
+  },
+  //异步获取用户信息的action
+  async reqUserInfo({commit}){
+    const result = await reqUserInfo()
+    if(result.code === 0){
+      const user = result.data
+      commit(RECEIVE_USER,user)
+    }
+  },
+  //退出登录
+  async logOutLogin({commit}){
+    const result = await reqLogOut()
+    if(result.code === 0){
+      commit(RESET_USER)
+    }
+  }
 
 }

@@ -19,7 +19,7 @@
               </button>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码">
+              <input type="tel" maxlength="8" placeholder="验证码" v-model="code">
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -39,7 +39,7 @@
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码" v-model="code">
+                <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
                 <img ref="captcha" class="get_verification" src="http://localhost:5000/captcha"
                      alt="captcha" @click="updateCaptcha">
               </section>
@@ -61,8 +61,6 @@
     reqSendCode,
     reqUserPwdLogin,
     reqSmsLogin,
-    reqUserInfo,
-    reqLogOut
   } from '../../api/index'
 
   export default {
@@ -105,8 +103,9 @@
         }
       },
       //登录
-      login(){
-        const {loginWay,isRightPhone,code,pwd,showPwd,name,captcha} = this
+      async login(){
+        const {loginWay,isRightPhone,code,pwd,phone,name,captcha} = this
+        let result
         if(loginWay){   //短信登录
           if(!isRightPhone){
             alert('请输入正确的手机号')
@@ -115,6 +114,9 @@
             alert('请输入正确的验证码')
             return
           }
+          //发送ajax请求短信登录
+          result = await reqSmsLogin(phone,code)
+          this.countDown = 0
         }else {   //密码登录
           if(!name.trim()){
             alert('请输入正确的用户名')
@@ -126,8 +128,18 @@
             alert('请输入正确的验证码')
             return
           }
+          //发送ajax请求密码登录
+          result = await reqUserPwdLogin({name,pwd,captcha})
         }
-        console.log('发送请求成功')
+        if(result.code === 0){
+          const user = result.data
+          //将数据保存到vuex
+          this.$store.dispatch('saveUser',user)
+          //跳转到profile界面
+          this.$router.replace('/profile')
+        }else {
+          alert(result.msg)
+        }
       },
       //更新图片验证码
       updateCaptcha(){
