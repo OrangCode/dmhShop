@@ -13,7 +13,7 @@
           <div :class="{on:loginWay}">
             <section class="login_message">
               <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
-              <button :disabled="!isRightPhone" class="get_verification"
+              <button :disabled="!isRightPhone || countDown>0" class="get_verification"
               :class="{right:isRightPhone}" @click.prevent="sendCode">
                 {{countDown > 0 ? `已发送(${countDown}s)` : '获取验证码'}}
               </button>
@@ -29,22 +29,22 @@
           <div :class="{on:!loginWay}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
+                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名" v-model="name">
               </section>
               <section class="login_verification">
-                <input type="tel" maxlength="8" placeholder="密码">
-                <div class="switch_button off">
-                  <div class="switch_circle"></div>
-                  <span class="switch_text">...</span>
+                <input :type="showPwd ? 'text' : 'password'" maxlength="8" placeholder="密码" v-model="pwd">
+                <div class="switch_button" :class="showPwd ? 'on' : 'off'" @click="showPwd=!showPwd">
+                  <div class="switch_circle" :class="{rightDot:showPwd}"></div>
+                  <span class="switch_text">{{showPwd ? 'ABC' : ''}}</span>
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码">
+                <input type="text" maxlength="11" placeholder="验证码" v-model="code">
                 <img class="get_verification" src="./images/captcha.svg" alt="captcha">
               </section>
             </section>
           </div>
-          <button class="login_submit">登录</button>
+          <button class="login_submit" @click.prevent="login">登录</button>
         </form>
         <a href="javascript:;" class="about_us">关于我们</a>
       </div>
@@ -59,9 +59,14 @@
   export default {
     data(){
       return {
+        code:'',     //一次性短信验证码
         loginWay:true,  //true短信登录 false密码登录
         phone:'',  //手机号
-        countDown:0   //倒计时
+        countDown:0,   //倒计时
+        pwd:'',   //密码
+        showPwd:false,  //密码是否显示
+        name:'',   //用户名
+        captcha:''   //图片验证码
       }
     },
     computed:{
@@ -70,6 +75,7 @@
       }
     },
     methods:{
+        //发送短信验证码
       sendCode(){
         this.countDown = 30  //倒计时总时长
         const intervalId = setInterval(() => {
@@ -78,6 +84,31 @@
             clearInterval(intervalId)
           }
         },1000)
+      },
+      //登录
+      login(){
+        const {loginWay,isRightPhone,code,pwd,showPwd,name,captcha} = this
+        if(loginWay){   //短信登录
+          if(!isRightPhone){
+            alert('请输入正确的手机号')
+            return
+          }else if(!/^\d{6}$/.test(code)){
+            alert('请输入正确的验证码')
+            return
+          }
+        }else {   //密码登录
+          if(!name.trim()){
+            alert('请输入正确的用户名')
+            return
+          }else if(!pwd.trim()){
+            alert('请输入正确的密码')
+            return
+          }else if(!captcha.trim()){
+            alert('请输入正确的验证码')
+            return
+          }
+        }
+        console.log('发送请求成功')
       }
     }
   }
@@ -174,7 +205,6 @@
                 &.on
                   background #02a774
                 >.switch_circle
-                //transform translateX(27px)
                   position absolute
                   top -1px
                   left -1px
@@ -185,6 +215,8 @@
                   background #fff
                   box-shadow 0 2px 4px 0 rgba(0,0,0,.1)
                   transition transform .3s
+                  &.rightDot
+                    transform translateX(27px)
             .login_hint
               margin-top 12px
               color #999
