@@ -14,5 +14,13 @@ export const reqAddress = (longitude,latitude) => ajax(BASE + `/position/${latit
 export const reqCategorys = () => ajax(BASE + '/index_category')
 // [3、根据经纬度获取商铺列表](#3根据经纬度获取商铺列表)<br/>
 export const reqShops = ({longitude,latitude}) => ajax(BASE + '/shops',{latitude,longitude})
-
-
+// 6、用户名密码登陆
+export const reqUserPwdLogin = ({name,pwd,captcha}) => ajax(BASE + '/login_pwd',{name,pwd,captcha},'POST')
+// 7、发送短信验证码
+export const reqSendCode = phone => ajax(BASE + '/sendcode',{phone})
+// 8、手机号验证码登陆
+export const reqSmsLogin = (phone,code) => ajax(BASE + '/login_sms',{phone,code},'POST')
+// 9、根据会话获取用户信息
+export const reqUserInfo = () => ajax(BASE + '/userinfo')
+// 10、用户登出
+export const reqLogOut = () => ajax(BASE + '/logout')

@@ -57,6 +57,14 @@
 </template>
 
 <script>
+  import {
+    reqSendCode,
+    reqUserPwdLogin,
+    reqSmsLogin,
+    reqUserInfo,
+    reqLogOut
+  } from '../../api/index'
+
   export default {
     data(){
       return {
@@ -77,14 +85,24 @@
     },
     methods:{
         //发送短信验证码
-      sendCode(){
+      async sendCode(){
         this.countDown = 60  //倒计时总时长
         const intervalId = setInterval(() => {
           this.countDown--
-          if(this.countDown === 0){
+          if(this.countDown <= 0){
+            this.countDown = 0
             clearInterval(intervalId)
           }
         },1000)
+
+        //发送ajax请求
+        const result = await reqSendCode(this.phone)
+        if(result.code === 0){
+          this.countDown = 0
+          alert('短信发送成功')
+        }else {
+          alert(result.msg)
+        }
       },
       //登录
       login(){
