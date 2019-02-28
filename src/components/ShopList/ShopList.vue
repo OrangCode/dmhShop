@@ -56,7 +56,9 @@
         }
       },
       computed:{
-        ...mapState(['shops','categorys'])
+        ...mapState({
+          shops:state => state.msite.shops
+        })
     }
   }
 </script>

@@ -9,10 +9,12 @@ import router from './router'
 import Header from './components/Header/Header.vue'
 import store from './store'
 import Star from './components/star/star.vue'
-
+import './mock/mockServer'
+import CartControl from './components/CartControl/CartControl.vue'
 //注册全局组件
 Vue.component('Header',Header)
 Vue.component('Star',Star)
+Vue.component('CartControl',CartControl)
 
 
 /* eslint-disable no-new */

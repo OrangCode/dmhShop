@@ -50,6 +50,8 @@
         this.$store.dispatch('getCategorys')
         //异步获取商家列表
         this.$store.dispatch('getShops')
+
+        this.$store.dispatch('getAddress')
       },
       components:{
         ShopList
@@ -73,7 +75,10 @@
         }
       },
       computed:{
-        ...mapState(['address','categorys']),
+        ...mapState({
+          address:state => state.msite.address,
+          categorys:state => state.msite.categorys
+        }),
         categoryArr(){
           const {categorys} = this
           const arr = []  //二维数组
