@@ -12,8 +12,8 @@
     },
 
     methods: {
-      async updateFoodCount (isAdd) {
-        await this.$store.dispatch('updateFoodCount', {isAdd, food:this.food})
+      updateFoodCount (isAdd) {
+        this.$store.dispatch('updateFoodCount', {isAdd, food:this.food})
       }
     }
   }
